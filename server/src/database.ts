@@ -11,16 +11,22 @@ const pool = mysql
   })
   .promise();
 
-async function getNotes() {
+export async function getNotes() {
   const [rows] = await pool.query("SELECT * FROM tasks");
   return rows;
 }
 
-async function getNote(id: number) {
+export async function getNote(id: number) {
   // Prepared Sequence, Prevents Attacks
   const [rows] = await pool.query(`SELECT * FROM tasks WHERE id = ?`, [id]);
   return rows[0];
 }
 
-const note = await getNote(1);
-console.log(note);
+export async function createNote(title: string, content: string) {
+  const [ResultSetHeader] = await pool.query(
+    `INSERT INTO tasks (title, content) VALUES (?, ?)`,
+    [title, content]
+  );
+  const id = ResultSetHeader["insertId"];
+  return getNote(id);
+}
