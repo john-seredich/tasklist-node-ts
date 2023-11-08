@@ -16,5 +16,11 @@ async function getNotes() {
   return rows;
 }
 
-const notes = await getNotes();
-console.log(notes);
+async function getNote(id: number) {
+  // Prepared Sequence, Prevents Attacks
+  const [rows] = await pool.query(`SELECT * FROM tasks WHERE id = ?`, [id]);
+  return rows[0];
+}
+
+const note = await getNote(1);
+console.log(note);
